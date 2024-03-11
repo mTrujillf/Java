@@ -32,6 +32,7 @@ public class EscuchadoMonstruo extends Thread {
         try {
 
             while (true) {
+                buffer = new byte[1000];
                 messageIn = new DatagramPacket(buffer, buffer.length);
                 socket.receive(messageIn);
                 data = new String(messageIn.getData()).trim();

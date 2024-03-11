@@ -17,8 +17,6 @@ public class Pegale {
 
     private int m;
     private int n;
-    private Integer mMonstruo;
-    private Integer nMonstruo;
     private int [] monstruo;
     private Socket s = null;
     private String data;
@@ -27,6 +25,7 @@ public class Pegale {
     private byte[] buffer;
     private DatagramPacket messageIn;
     private EscuchadoMonstruo em;
+    private int serverPort = 49152;
 
     public Pegale(String user) {
         monstruo = new int[2];
@@ -41,12 +40,12 @@ public class Pegale {
 
 
         try {
-            int serverPort = 49152;
 
             s = new Socket("localhost", serverPort);
             //s = new Socket("127.0.0.1", serverPort);
             in = new DataInputStream(s.getInputStream());
             out = new DataOutputStream(s.getOutputStream());
+            out.writeUTF(user);
 
         } catch (UnknownHostException e) {
 
@@ -207,11 +206,16 @@ public class Pegale {
         if(n == monstruo[1] && m == monstruo[0]){
             try {
                 System.out.println("Hit");
+
+                //s = new Socket("localhost", serverPort);
+                out = new DataOutputStream(s.getOutputStream());
+
                 out.writeUTF(user);
-                out.writeUTF(nMonstruo + "," + mMonstruo);
+                out.writeUTF(monstruo[0] + "," + monstruo[1]);
             } catch (IOException e) {
 
             }
+
         }
     }
 
