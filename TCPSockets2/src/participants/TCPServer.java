@@ -19,6 +19,7 @@ class Connection extends Thread {
     private String user;
     private String data;
     private Character chr;
+    private DataOutputStream out;
 
     private Integer nHit;
     private Integer mHit;
@@ -34,7 +35,11 @@ class Connection extends Thread {
         try {
             clientSocket = aClientSocket;
             in = new DataInputStream(clientSocket.getInputStream());
-            //out = new DataOutputStream(clientSocket.getOutputStream());
+            out = new DataOutputStream(clientSocket.getOutputStream());
+
+            out.writeUTF("228.5.194.7");
+            out.writeUTF("49155");
+
             user = in.readUTF();
             System.out.println("El usuario " + user + " entro al juego");
             dictionary.put(user,0);
@@ -50,28 +55,21 @@ class Connection extends Thread {
             while(true) {
                 // an echo server
                 user = in.readUTF();
-                System.out.println("Hit: " + user);
                 paso = false;
                 while(!paso) {
                     try {
                         data = in.readUTF();
-                        System.out.println("Datos de entrada: " + data);
 
                         chr = data.charAt(0);
                         mHit = Integer.parseInt(chr.toString());
-                        System.out.println("1");
+
                         chr = data.charAt(2);
                         nHit = Integer.parseInt(chr.toString());
-                        System.out.println("2");
-                        System.out.println("El mHit: " + mHit);
-                        System.out.println("El nHit: " + nHit);
-                        System.out.println("El m: " + monstruo[1]);
-                        System.out.println("El n: " + monstruo[0]);
+
                         if(nHit == monstruo[0] && mHit == monstruo[1]){
                             puntaje = dictionary.get(user);
-                            System.out.println("3");
+
                             puntaje = puntaje+1;
-                            System.out.println("Puntaje del usuario: "+puntaje);
                             if(puntaje == 5){
                                 String myMessage = "El ganador de la ronda es: " + user;
                                 byte[] men = myMessage.getBytes();
@@ -85,10 +83,8 @@ class Connection extends Thread {
                             }else{
                                 dictionary.put(user,puntaje);
                             }
-                            System.out.println("Entro");
                             monstruo[0] = (int) (Math.random()*(4)+0);
                             monstruo[1] = (int) (Math.random()*(4)+0);
-                            System.out.println("Se cambio al monstruo: " + monstruo[1] + "," + monstruo[0]);
                             paso = true;
                         }else{
                             data = in.readUTF();

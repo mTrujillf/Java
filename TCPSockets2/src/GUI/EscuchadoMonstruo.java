@@ -17,16 +17,14 @@ public class EscuchadoMonstruo extends Thread {
     private DatagramPacket messageIn;
     private Character chr;
     private int []monstruo;
-    public EscuchadoMonstruo(int [] monstruo) {
+    private JCheckBox [] arrCheck;
+    public EscuchadoMonstruo(int [] monstruo,JCheckBox [] arrCheck,MulticastSocket socket) {
         this.monstruo = monstruo;
-        try {
-            group = InetAddress.getByName("228.5.194.7"); // destination multicast group
-            socket = new MulticastSocket(49155);
-            socket.joinGroup(group);
-            buffer = new byte[1000];
-        } catch (IOException ex) {
+        this.arrCheck = arrCheck;
 
-        }
+        this.socket = socket;
+        buffer = new byte[1000];
+
     }
     public void run() {
         try {
@@ -36,12 +34,14 @@ public class EscuchadoMonstruo extends Thread {
                 messageIn = new DatagramPacket(buffer, buffer.length);
                 socket.receive(messageIn);
                 data = new String(messageIn.getData()).trim();
-                System.out.println(data);
+                //System.out.println(data);
                 try{
                     chr = data.charAt(0);
                     monstruo[0] = Integer.parseInt(chr.toString());
                     chr = data.charAt(2);
                     monstruo[1] = Integer.parseInt(chr.toString());
+                    int pos = monstruo[0]*4 + monstruo[1];
+                    arrCheck[pos].setSelected(true);
                 }catch(Exception e){
                     System.out.println(data);
                 }

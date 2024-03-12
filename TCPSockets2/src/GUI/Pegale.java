@@ -26,23 +26,26 @@ public class Pegale {
     private DatagramPacket messageIn;
     private EscuchadoMonstruo em;
     private int serverPort = 49152;
+    MulticastSocket socket;
 
-    public Pegale(String user) {
+    public Pegale(String user,Socket s,MulticastSocket socket) {
         monstruo = new int[2];
         this.user = user;
         textField1.setVisible(false);
+        this.socket = socket;
 
         buffer = new byte[1000];
-
-        em = new EscuchadoMonstruo(monstruo);
+        JCheckBox [] arrCheck = {a00CheckBox,a01CheckBox,a02CheckBox,a03CheckBox,
+                                a10CheckBox,a11CheckBox,a12CheckBox,a13CheckBox,
+                                a20CheckBox,a21CheckBox,a22CheckBox,a23CheckBox,
+                                a30CheckBox,a31CheckBox,a32CheckBox,a33CheckBox};
+        em = new EscuchadoMonstruo(monstruo,arrCheck,socket);
         em.start();
         messageIn = new DatagramPacket(buffer, buffer.length);
 
 
         try {
-
-            s = new Socket("localhost", serverPort);
-            //s = new Socket("127.0.0.1", serverPort);
+            this.s = s;
             in = new DataInputStream(s.getInputStream());
             out = new DataOutputStream(s.getOutputStream());
             out.writeUTF(user);
@@ -205,9 +208,6 @@ public class Pegale {
     public void validaHit(){
         if(n == monstruo[1] && m == monstruo[0]){
             try {
-                System.out.println("Hit");
-
-                //s = new Socket("localhost", serverPort);
                 out = new DataOutputStream(s.getOutputStream());
 
                 out.writeUTF(user);
