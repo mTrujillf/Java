@@ -15,9 +15,11 @@ public class EscuchadoMonstruo extends Thread {
     private String data;
     private byte[] buffer;
     private DatagramPacket messageIn;
-    private Character chr;
+    private Character chr1;
+    private Character chr2;
     private int []monstruo;
     private JCheckBox [] arrCheck;
+    private int pos;
     public EscuchadoMonstruo(int [] monstruo,JCheckBox [] arrCheck,MulticastSocket socket) {
         this.monstruo = monstruo;
         this.arrCheck = arrCheck;
@@ -36,11 +38,20 @@ public class EscuchadoMonstruo extends Thread {
                 data = new String(messageIn.getData()).trim();
                 //System.out.println(data);
                 try{
-                    chr = data.charAt(0);
-                    monstruo[0] = Integer.parseInt(chr.toString());
-                    chr = data.charAt(2);
-                    monstruo[1] = Integer.parseInt(chr.toString());
-                    int pos = monstruo[0]*4 + monstruo[1];
+                    chr1 = data.charAt(0);
+
+                    chr2 = data.charAt(2);
+
+                    m = Integer.parseInt(chr1.toString());
+                    n = Integer.parseInt(chr2.toString());
+
+                    if(!(monstruo[0] == m && monstruo[1]==n)){
+                        pos = monstruo[0]*4 + monstruo[1];
+                        arrCheck[pos].setSelected(false);
+                    }
+                    monstruo[0] = m;
+                    monstruo[1] = n;
+                    pos = monstruo[0]*4 + monstruo[1];
                     arrCheck[pos].setSelected(true);
                 }catch(Exception e){
                     System.out.println(data);
